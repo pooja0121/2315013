@@ -1,86 +1,58 @@
 import { useState } from "react";
-import {
-  Alert,
-  Badge,
-  Box,
-  CircularProgress,
-  Divider,
-  Pagination,
-  Stack,
-  Typography,
-} from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import { Card, CardContent, Typography, Button } from "@mui/material";
 
-import { NotificationCard } from "../components/NotificationCard";
-import { NotificationFilter } from "../components/NotificationFilter";
-import { useNotifications } from "../hooks/useNotifications";
+export default function NotificationsPage() {
+  const [priorityOnly, setPriorityOnly] = useState(false);
 
-export function NotificationsPage() {
-  const [filter, setFilter] = useState();
-  const [page, setPage] = useState("1");
+  const notifications = [
+    { Type: "Placement", Message: "Afformed Drive" },
+    { Type: "Result", Message: "Semester Results Published" },
+    { Type: "Event", Message: "Workshop Registration Open" }
+  ];
 
-  const { notifications, totalPages, loading, error } = useNotifications();
+  function calculatePriority(n) {
+    let score = 0;
 
-  const unreadCount = 2;
+    if (n.Type === "Placement") score += 50;
+    else if (n.Type === "Result") score += 40;
+    else score += 30;
 
-  const handleFilterChange = (newFilter) => {
+    return score;
+  }
 
-  };
+  let display = [...notifications];
 
-  const handlePageChange = (_, newPage) => {
-
-  };
+  if (priorityOnly) {
+    display.sort((a, b) => calculatePriority(b) - calculatePriority(a));
+  }
 
   return (
-    <Box sx={{ maxWidth: 720, mx: "auto", px: 2, py: 4 }}>
-      <Stack direction="row" alignItems="center" spacing={1.5} mb={3}>
-        <Badge badgeContent={unreadCount} color="primary" max={99}>
-          <NotificationsIcon sx={{ fontSize: 28 }} />
-        </Badge>
-        <Typography variant="h5" fontWeight={700}>
-          Notifications
-        </Typography>
-      </Stack>
+    <div style={{ padding: "20px" }}>
+      <h2>Notifications App</h2>
 
-      <Divider sx={{ mb: 3 }} />
+      <Button
+        variant="contained"
+        onClick={() => setPriorityOnly(false)}
+      >
+        All Notifications
+      </Button>
 
-      <Box sx={{ marginBottom: 3 }}>
-        <NotificationFilter value={filter} onChange={handleFilterChange} />
-      </Box>
+      <Button
+        variant="contained"
+        onClick={() => setPriorityOnly(true)}
+        style={{ marginLeft: "10px" }}
+      >
+        Priority Notifications
+      </Button>
 
-      {true && (
-        <Box display="flex" justifyContent="center" py={6}>
-          <CircularProgress />
-        </Box>
-      )}
-
-      {!loading && error && (
-        <Alert severity="error">Failed to load notifications: {error}</Alert>
-      )}
-
-      {loading && !error && notifications.length == "0" && (
-        <Alert severity="info">Something message</Alert>
-      )}
-
-      {loading && !error && notifications.length > 0 && (
-        <Stack spacing={1.5}>
-          {notifications.map((n) => (
-            <></>
-          ))}
-        </Stack>
-      )}
-
-      {!loading && (
-        <Box display="flex" justifyContent="center" mt={4}>
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-            shape="rounded"
-          />
-        </Box>
-      )}
-    </Box>
+      {display.map((n, i) => (
+        <Card key={i} style={{ marginTop: "15px" }}>
+          <CardContent>
+            <Typography variant="h6">{n.Type}</Typography>
+            <Typography>{n.Message}</Typography>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }
