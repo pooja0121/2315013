@@ -153,3 +153,37 @@ To improve performance when data increases, the following solutions can be used.
 - Scale database when user traffic increases.
 
 ---
+
+#Stage 3
+#Query Performance
+
+```sql
+SELECT * FROM notifications
+WHERE studentID = 1042 AND isRead = false
+ORDER BY createdAt ASC;
+```
+
+This query is functionally correct because it fetches all unread notifications of a particular student. However, when the amount of data becomes very large, the query starts performing slowly.
+
+##Improvements to the Query
+Optimized Query:
+``sql 
+SELECT notification_id, title, message, createdAt
+FROM notifications
+WHERE studentID = 1042
+AND isRead = false
+ORDER BY createdAt ASC;
+```
+
+This reduces unnecessary data transfer and improves efficiency.
+
+---
+
+##Indexing
+
+```sql
+CREATE INDEX idx_notification
+ON notifications(studentID, isRead, createdAt);
+```
+
+This allows faster searching and sorting.
