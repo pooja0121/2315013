@@ -117,7 +117,7 @@ CREATE TABLE notifications (
 ### Fetch All Notifications
 used when students open the notification page
 ```sql
-SELECT * FROM notifications;
+Select * From notifications;
 
 
 ### Delete Notification
@@ -128,4 +128,28 @@ Used by admin to remove notifications.
 DELETE FROM notifications
 WHERE notification_id = 1;
 ```
+---
+## Problems When Data Increases
+
+As the number of students and notifications increase, some issues may occur.
+
+Possible problems:
+
+- Database queries may become slower.
+- Large notification records can reduce performance.
+- Too many users accessing at the same time may increase server load.
+- Delay in fetching notifications.
+
+---
+
+## Solutions for Large Data Handling
+
+To improve performance when data increases, the following solutions can be used.
+
+- Use indexing to speed up searching.
+- Use caching to reduce repeated database access.
+- Apply pagination instead of loading all notifications together.
+- Optimize SQL queries for faster execution.
+- Scale database when user traffic increases.
+
 ---
