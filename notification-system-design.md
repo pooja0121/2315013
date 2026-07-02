@@ -268,14 +268,63 @@ The process can be redesigned using asynchronous background processing.
 
 Improved flow:
 
-1. Save notification data in database first.
-2. Add email tasks into a queue.
-3. Add in-app notification tasks into another queue.
-4. Process both queues independently.
-5. Retry failed tasks automatically.
+Save notification data in database first.
+Add email tasks into a queue.
+Add in-app notification tasks into another queue.
+Process both queues independently.
+Retry failed tasks automatically.
 
 ## Advantage of New Design
 
 Faster processing because taks run asynchronosouly
 failure in email service does not stop the entire system
 database remain consistent
+
+# Stage 6
+
+# Priority Inbox Implementation Approach
+
+The product manager wants to introduce a Priority Inbox feature where students should always see the top important unread notifications first. The system should display only the top 10 notifications based on priority.
+
+The priority of each notification depends on three main factors.
+
+Notification Type  
+Message Length  
+Recency of Notification  
+
+The notification type has different importance levels. Placement notifications are considered most important, followed by Result notifications, and then Event notifications.
+
+The notifications are fetched using the provided Notification API and no database storage is required for this stage.
+
+---
+## Priority Calculation Logic
+
+Each notification is assigned a score based on the following conditions.
+
+## Notification Type Weight
+
+Different notification categories have different importance.
+
+Placement = 50 points  
+Result = 40 points  
+Event = 30 points  
+
+Placement notifications receive higher priority because students need immediate updates regarding job opportunities.
+
+---
+## Approach for Finding Top 10 Notifications
+
+The system first fetches all notifications from the API.
+
+After receiving notifications:
+
+Filter only unread notifications.
+Calculate priority score for each notification.
+Sort notifications in descending order based on score.
+Display top 10 notifications.
+
+## Why Priority Queue is Better
+
+Advantages:
+Faster insertion of new notifications.
+No need to sort the entire notification list every time.

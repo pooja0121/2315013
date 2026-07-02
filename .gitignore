@@ -21,3 +21,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+notification-app-fe/node_modules
+notification-app-be/node_modules
