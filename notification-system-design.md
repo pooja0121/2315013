@@ -187,3 +187,95 @@ ON notifications(studentID, isRead, createdAt);
 ```
 
 This allows faster searching and sorting.
+
+# Stage 4
+
+# Improving Performance When Notifications are Loaded Frequently
+
+Currently, notifications are being fetched every time a student opens or refreshes the page. As the number of users increases, the database receives too many requests continuously. This creates heavy load on the database and causes slow response time.
+
+---
+## Problem in Current System
+
+The current system fetches notification data directly from the database on every page load.
+
+This causes the following issues.
+
+Database receives too many repeated requests.
+Server load increases when many students access the system together.
+## solution 1 :Caching
+Frequently accessed notifications can be stored temporarily in cache memory.
+
+Example:
+
+Redis Cache
+
+Advantages:
+
+- Faster response time.
+- Reduces database load.
+- Avoids repeated database queries.
+# Solution 2: Real Time Updates
+
+Instead of checking database repeatedly, the server can push notifications only when a new notification is created.
+
+Technology Used:
+Socket.IO
+Advantages:
+Instant updates.
+No repeated database polling.
+Better user experience.
+
+## Solution 3: Database Optimization
+
+Database queries should be optimized by creating indexes and reducing unnecessary queries.
+
+Advantages:
+Faster searching.
+Better handling of large datasets.
+
+# Stage 5
+# Reliable Notification Delivery for Large Number of Students
+
+## Problems in Current Implementation
+
+The current implementation processes each student one by one inside a loop.
+
+This creates multiple problems.
+
+Sending notifications to 50,000 students sequentially takes a lot of time.
+If the email API becomes slow, the whole process gets delayed.
+If sending email fails for some students, the process becomes inconsistent.
+Database insertion and notification delivery are tightly connected.
+Failure in one operation can interrupt the overall process.
+
+Because of these reasons, this implementation is not reliable for large scale systems.
+
+---
+## What Happens if Email Fails for 200 Students?
+
+Logs show that email sending failed for 200 students in between execution.
+
+In the current system:
+
+Some students may already receive notifications.
+Some notification records may already be saved in the database.
+## Better System Design
+
+Instead of processing everything together, each task should be handled independently.
+
+The process can be redesigned using asynchronous background processing.
+
+Improved flow:
+
+1. Save notification data in database first.
+2. Add email tasks into a queue.
+3. Add in-app notification tasks into another queue.
+4. Process both queues independently.
+5. Retry failed tasks automatically.
+
+## Advantage of New Design
+
+Faster processing because taks run asynchronosouly
+failure in email service does not stop the entire system
+database remain consistent
